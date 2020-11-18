@@ -22,10 +22,27 @@ var myMap = L.map("map", {
   var geojson;
   
   // Grab data with d3
-  d3.json(quakeData, function(data) {
-      var features = data["features"];
-      console.log(data)
-  });
+  d3.json(quakeData, function(response) {
+    console.log(response);
+    var features = response["features"];
+    for (var i = 0; i < features.length; i++) {
+    var lat = features[i]["geometry"]["coordinates"][1];
+    var long = features[i]["geometry"]["coordinates"][0];
+              
+        // if (location) {
+        //   L.marker([location.coordinates[1], location.coordinates[0]]).addTo(myMap);
+        // }
+      }
+  };
+    var circle()
+  );
+ 
+
+   
+  
+    
+  
+//   });
   
 //   {
   
@@ -86,4 +103,34 @@ var myMap = L.map("map", {
     // legend.addTo(myMap);
   
 //   );
-  
+ 
+//cluster marker example
+// Assemble API query URL
+// var url = baseURL + date + complaint + limit;
+
+// // Grab the data with d3
+// d3.json(url, function(response) {
+
+//   // Create a new marker cluster group
+//   var markers = L.markerClusterGroup();
+
+//   // Loop through data
+//   for (var i = 0; i < response.length; i++) {
+
+//     // Set the data location property to a variable
+//     var location = response[i].location;
+
+//     // Check for location property
+//     if (location) {
+
+//       // Add a new marker to the cluster group and bind a pop-up
+//       markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
+//         .bindPopup(response[i].descriptor));
+//     }
+
+//   }
+
+//   // Add our marker cluster layer to the map
+//   myMap.addLayer(markers);
+
+// });

@@ -17,10 +17,20 @@ var myMap = L.map("map", {
   }).addTo(myMap);
   
   // Load in geojson data
-  var quakeData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson";
-  
+  var quakeData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
   var geojson;
   
+  function getColor(d) {
+    return d > 1000 ? '#800026' :
+           d > 500  ? '#BD0026' :
+           d > 200  ? '#E31A1C' :
+           d > 100  ? '#FC4E2A' :
+           d > 50   ? '#FD8D3C' :
+           d > 20   ? '#FEB24C' :
+           d > 10   ? '#FED976' :
+                      '#FFEDA0';
+}
+
   // Grab data with d3
   d3.json(quakeData, function(response) {
     console.log(response);
@@ -28,109 +38,39 @@ var myMap = L.map("map", {
     for (var i = 0; i < features.length; i++) {
     var lat = features[i]["geometry"]["coordinates"][1];
     var long = features[i]["geometry"]["coordinates"][0];
-              
-        // if (location) {
-        //   L.marker([location.coordinates[1], location.coordinates[0]]).addTo(myMap);
-        // }
-      }
-  };
-    var circle()
-  );
- 
+    var mag = features[i]["properties"]["mag"];
+    var depth = features[i]["geometry"]["coordinates"][2];
+    var title = features[i]["properties"]["title"];
+    var place = features[i]["properties"]["place"];
+    //add fill color, change colors and add description to the legend     
+        // console.log(features[i])
+        console.log(title)
+        L.circleMarker([lat,long], {radius: Math.pow(mag, 3)/10, color: getColor(depth) })
+          .bindPopup(title).bindPopup(place).addTo(myMap);
+                
+        }
+    });
+
+  // Set up the legend
+  var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<hr>' : '+');
+    }
+
+    return div;
+};
+
+legend.addTo(myMap);
+   
 
    
-  
-    
-  
-//   });
-  
-//   {
-  
-    // // Create a new choropleth layer
-    // geojson = L.choropleth(data, {
-  
-    //   // Define what  property in the features to use
-    //   valueProperty: "MHI2016",
-  
-    //   // Set color scale
-    //   scale: ["#ffffb2", "#b10026"],
-  
-    //   // Number of breaks in step range
-    //   steps: 10,
-  
-    //   // q for quartile, e for equidistant, k for k-means
-    //   mode: "q",
-    //   style: {
-    //     // Border color
-    //     color: "#fff",
-    //     weight: 1,
-    //     fillOpacity: 0.8
-    //   },
-  
-      // Binding a pop-up to each layer
-    //   onEachFeature: function(feature, layer) {
-    //     layer.bindPopup("Place: " + features.type.place + "<br>Location:<br>" +
-    //       "$" + features.type.detail);
-    //   }
-    // }).addTo(myMap);
-  
-    // // Set up the legend
-    // var legend = L.control({ position: "bottomright" });
-    // legend.onAdd = function() {
-    //   var div = L.DomUtil.create("div", "info legend");
-    //   var limits = geojson.options.limits;
-    //   var colors = geojson.options.colors;
-    //   var labels = [];
-  
-    //   // Add min & max
-    //   var legendInfo = "<h1>Median Income</h1>" +
-    //     "<div class=\"labels\">" +
-    //       "<div class=\"min\">" + limits[0] + "</div>" +
-    //       "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-    //     "</div>";
-  
-    //   div.innerHTML = legendInfo;
-  
-    //   limits.forEach(function(limit, index) {
-    //     labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-    //   });
-  
-    //   div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-    //   return div;
-    // };
-  
-    // // Adding legend to the map
-    // legend.addTo(myMap);
-  
-//   );
- 
-//cluster marker example
-// Assemble API query URL
-// var url = baseURL + date + complaint + limit;
-
-// // Grab the data with d3
-// d3.json(url, function(response) {
-
-//   // Create a new marker cluster group
-//   var markers = L.markerClusterGroup();
-
-//   // Loop through data
-//   for (var i = 0; i < response.length; i++) {
-
-//     // Set the data location property to a variable
-//     var location = response[i].location;
-
-//     // Check for location property
-//     if (location) {
-
-//       // Add a new marker to the cluster group and bind a pop-up
-//       markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
-//         .bindPopup(response[i].descriptor));
-//     }
-
-//   }
-
-//   // Add our marker cluster layer to the map
-//   myMap.addLayer(markers);
-
-// });

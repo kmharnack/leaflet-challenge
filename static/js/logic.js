@@ -21,14 +21,12 @@ var myMap = L.map("map", {
   var geojson;
   
   function getColor(d) {
-    return d > 1000 ? '#800026' :
-           d > 500  ? '#BD0026' :
-           d > 200  ? '#E31A1C' :
-           d > 100  ? '#FC4E2A' :
-           d > 50   ? '#FD8D3C' :
-           d > 20   ? '#FEB24C' :
-           d > 10   ? '#FED976' :
-                      '#FFEDA0';
+    return d > 90  ? '#FF0000' :
+           d > 70  ? '#FF4000' :
+           d > 50   ? '#FF8000' :
+           d > 30   ? '#FFBF00' :
+           d > 10   ? '#FFFF00' :
+                    '#BFFF00';
 }
 
   // Grab data with d3
@@ -45,8 +43,12 @@ var myMap = L.map("map", {
     //add fill color, change colors and add description to the legend     
         // console.log(features[i])
         console.log(title)
-        L.circleMarker([lat,long], {radius: Math.pow(mag, 3)/10, color: getColor(depth) })
-          .bindPopup(title).bindPopup(place).addTo(myMap);
+        L.circleMarker([lat,long], {
+            radius: Math.pow(mag, 3)/10, 
+            color: getColor(depth),
+            fillColor: getColor(depth),
+            fillOpacity: 0.7
+         }).bindPopup(title).bindPopup(place).addTo(myMap);
                 
         }
     });
@@ -57,7 +59,7 @@ var myMap = L.map("map", {
     legend.onAdd = function (map) {
 
     var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+        grades = [0, 10, 30, 50, 70, 90],
         labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
